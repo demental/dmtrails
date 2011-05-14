@@ -10,12 +10,6 @@
 #  updated_at :datetime
 #
 
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-
-one:
-  name: MyString
-  email: MyString
-
-two:
-  name: MyString
-  email: MyString
+class User < ActiveRecord::Base
+  attr_accessible :name, :email
+end

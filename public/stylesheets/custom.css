@@ -1,0 +1,96 @@
+body {
+  background: #eee;
+}
+
+header {
+  padding-top: 20px;
+  overflow:hidden;
+}
+
+header img {
+  padding: 1em;
+  background: #fff;
+}
+
+section {
+  margin-top: 1em;
+  font-size: 120%;
+  padding: 20px;
+  background: #fff;
+}
+
+section h1 {
+  font-size: 200%;
+}
+
+/* Links */
+
+a {
+  color: #09c;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #069;
+  text-decoration: underline;
+}
+
+a:visited {
+  color: #069;
+}
+
+nav {
+  background:#fff;
+  text-align:center;
+}
+header nav {
+  float:right;
+
+}
+nav li {
+
+  list-style:none;
+  display:inline;
+  padding:.5em 3em;
+}
+nav ul {
+  margin: 0;
+  padding: 0;
+  overflow:hidden;
+  text-align:center;
+}
+footer {
+
+  margin:1em 0;
+}
+
+
+.round {
+  border-radius:10px;
+  border:1px solid #ddf;
+  padding:1em;
+}
+a.signup_button {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  text-align: center;
+  width: 190px;
+  color: #fff;
+
+  font-size: 150%;
+  font-weight: bold;
+  padding: 20px;
+  background-image: -webkit-gradient(
+      linear,
+      left bottom,
+      left top,
+      color-stop(0.39, #089C4D),
+      color-stop(0.75, #0F7312)
+  );
+  background-image: -moz-linear-gradient(
+      center bottom,
+      #089C4D 39%,
+      #0F7312 75%
+  );
+}

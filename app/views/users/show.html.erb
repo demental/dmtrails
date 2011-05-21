@@ -1,1 +1,5 @@
-<%= @user.name %>, <%= @user.email %>
+<aside>
+Name: <%= @user.name %><br />
+URL : <%= link_to user_path(@user), @user  %>
+</aside>
+<h1><%= gravatar_for @user %><%= @user.name %></h1>

@@ -1,3 +1,6 @@
+aside, article, section, header, footer {
+  display:block;
+}
 body {
   background: #eee;
 }
@@ -5,6 +8,9 @@ body {
 header {
   padding-top: 20px;
   overflow:hidden;
+}
+header h1 {
+  float:left;
 }
 
 header img {
@@ -93,4 +99,16 @@ a.signup_button {
       #089C4D 39%,
       #0F7312 75%
   );
+}
+.profile {
+  float:left;
+  width:65%;
+}
+.container > section {
+  overflow:hidden;
+}
+aside {
+  float:right;
+  padding:1em 4em;
+  background: #ffc;
 }

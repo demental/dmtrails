@@ -1,0 +1,7 @@
+<% if flash.any? %>
+<section class="round" id="flashmessages">
+  <% flash.each do |key, value| %>
+    <div class="<%= key %>"><%= value %></div>
+  <% end %>
+</section>
+<% end %>

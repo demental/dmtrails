@@ -42,4 +42,43 @@ describe UsersController do
       response.should have_selector("h1>img", :class => "gravatar")
     end    
   end
+  describe "POST 'new'" do
+    before :each do
+      @notvalidattr = {:name=>'',:email=>'',:password=>'',:password_confirmation=>''}
+    end
+    it "should show reload form if not valid" do
+      post :create, :user => @notvalidattr
+      response.should have_selector("title", :content => 'Sign up')
+    end
+    it "should render the 'new' page" do
+      post :create, :user => @notvalidattr
+      response.should render_template('new')
+    end
+    it "should not create a user if not valid" do
+      lambda do
+        post :create, :user => @notvalidattr
+      end.should_not change(User, :count)
+    end    
+
+    describe 'success' do
+      before :each do
+        @validattr = {:name=>'demental',:email=>'demental@sat2way.com',:password=>'123456789',:password_confirmation=>'123456789'}
+      end
+      it "should create a user if valid" do
+        lambda do
+          post :create, :user => @validattr
+        end.should change(User, :count).by(1)
+      end
+      it "should redirect to the user show page" do
+        post :create, :user => @validattr
+        response.should redirect_to(user_path(assigns(:user)))
+      end  
+      it "should have a welcome message" do
+        post :create, :user => @validattr
+        flash[:success].should =~ /welcome to the sample app/i
+      end            
+    end
+
+  
+  end  
 end

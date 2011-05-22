@@ -16,6 +16,27 @@ describe UsersController do
       get 'new'
       response.should have_selector("title", :content => "Sign up")
     end
+    it "should have a name field" do
+      get :new
+      response.should have_selector("input[name='user[name]'][type='text']")
+    end    
+    it "should have an email field" do
+      get :new
+      response.should have_selector("input[name='user[email]'][type='text']")
+    end
+    it "should have a password field" do
+      get :new
+      response.should have_selector("input[name='user[password]'][type='password']")
+    end    
+    it "should have a confirmation field" do
+      get :new
+      response.should have_selector("input[name='user[password_confirmation]'][type='password']")
+    end    
+    it "should have a submit button" do
+      get :new
+      response.should have_selector("input[type='submit']")
+    end    
+
   end
   
   describe "GET 'show'" do
@@ -59,7 +80,14 @@ describe UsersController do
         post :create, :user => @notvalidattr
       end.should_not change(User, :count)
     end    
-
+    it "should reset password on failure" do
+      post :create, :user => @notvalidattr.merge({:password=>"test123",:password_confirmation=>'test123'})
+      assigns(:user).password.should be_empty
+    end
+    it "should reset password on failure" do
+      post :create, :user => @notvalidattr.merge({:password=>"test123",:password_confirmation=>'test123'})
+      assigns(:user).password_confirmation.should be_empty      
+    end
     describe 'success' do
       before :each do
         @validattr = {:name=>'demental',:email=>'demental@sat2way.com',:password=>'123456789',:password_confirmation=>'123456789'}

@@ -30,8 +30,13 @@ Spork.prefork do
     # examples within a transaction, remove the following line or assign false
     # instead of true.
     config.use_transactional_fixtures = true
-  end
+    
+    def test_sign_in(user)
+      controller.sign_in(user)
+    end  
 
+  end
+  
 end
 
 Spork.each_run do

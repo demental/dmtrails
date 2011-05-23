@@ -12,17 +12,39 @@ describe "LayoutLinks" do
     end
     
     it "should have an About page at '/about'" do
-      get '/about'
+        visit about_path
       response.should have_selector('title', :content => "About")
     end
     
     it "should have a Help page at '/help'" do
-      get '/help'
+        visit help_path
       response.should have_selector('title', :content => "Help")
     end     
     it "should have a signup page at '/signup'" do
-        get '/signup'
+        visit signup_path
         response.should have_selector('title', :content => "Sign up")
     end    
+    it "should have a sign in link for anon users" do
+        visit root_path
+        response.should have_selector('a', :href=> signin_path)
+    end
+    
+    describe "when logged in" do
+      before :each do
+        @user = Factory('user')
+        visit signin_path
+        fill_in :email, :with => @user.email
+        fill_in :password, :with => @user.password
+        click_button
+      end
+      it "should have a 'sign out' link" do
+        visit root_path
+        response.should have_selector('a', :href => signout_path)
+      end
+      it "should have a 'profile' link" do
+        visit root_path
+        response.should have_selector('a', :href => user_path(@user))
+      end    
+    end  
   end
 end

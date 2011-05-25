@@ -67,7 +67,12 @@ describe UsersController do
         end
         it "should have delete links" do
           get :index
-          response.should have_selector("a",:content => 'Delete')
+          response.should have_selector("a[data-method=delete]", :href => user_path(@users[1]))
+        end
+
+        it "should not have delete link for himself" do
+          get :index
+          response.should_not have_selector("a[data-method=delete]", :href => user_path(@user))
         end
       end    
     end    
@@ -104,6 +109,11 @@ describe UsersController do
           delete :destroy, :id=> @second
         end.should change(User,:count).by(-1)  
       end
+      it "should not be able to delete himself" do
+        lambda do
+          delete :destroy, :id=> @user
+        end.should_not change(User,:count)
+      end
     end
   end
     
@@ -137,7 +147,13 @@ describe UsersController do
       get :new
       response.should have_selector("input[type='submit']")
     end    
-
+    it "should not be accessible by signed in users" do
+      user = Factory(:user)
+      test_sign_in user
+      get :new
+      response.should redirect_to root_path
+    end
+      
   end
   
   describe "GET 'show'" do
@@ -167,7 +183,7 @@ describe UsersController do
       response.should have_selector("h1>img", :class => "gravatar")
     end    
   end
-  describe "POST 'new'" do
+  describe "POST 'create'" do
     before :each do
       @notvalidattr = {:name=>'',:email=>'',:password=>'',:password_confirmation=>''}
     end
@@ -191,7 +207,7 @@ describe UsersController do
     it "should reset password on failure" do
       post :create, :user => @notvalidattr.merge({:password=>"test123",:password_confirmation=>'test123'})
       assigns(:user).password_confirmation.should be_empty      
-    end
+    end    
     describe 'success' do
       before :each do
         @validattr = {:name=>'demental',:email=>'demental@sat2way.com',:password=>'123456789',:password_confirmation=>'123456789'}
@@ -213,6 +229,14 @@ describe UsersController do
         post :create, :user => @validattr
         flash[:success].should =~ /welcome to the sample app/i
       end            
+    end  
+    describe "signed in users" do
+      it "should not be accessible" do
+        user = Factory(:user)
+        test_sign_in user
+        get :create, :user => @validattr
+        response.should redirect_to root_path
+      end
     end  
   end  
   

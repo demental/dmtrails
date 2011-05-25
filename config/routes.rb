@@ -1,5 +1,7 @@
 Dmtrails::Application.routes.draw do
 
+  resources :gravatar, :only => [:edit, :update]
+
   resources :users
   resources :sessions, :only => [:new, :create, :destroy]
   

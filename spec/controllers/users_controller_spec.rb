@@ -3,9 +3,110 @@ require 'spec_helper'
 describe UsersController do
 
   render_views
-  before(:each) do
-    @user = Factory(:user)
+  
+  describe "GET 'index'" do
+    describe "for anon users" do
+      it "should deny access" do
+        get :index
+        response.should redirect_to(signin_path)
+      end  
+    end  
+    describe "for authenticated users" do
+      before :each do
+        @user = Factory(:user)
+        test_sign_in @user
+        second = Factory(:user, :name=>"bob",:email=>'demaj@fr.fr')
+        third = Factory(:user, :name=>"joe", :email=>'fekj@frge.fr')
+        
+        @users = [@user, second, third]
+      end  
+      it "should be successfull" do
+        get :index
+        response.should be_successful
+      end
+      it "should have the right title" do
+        get :index
+        response.should have_selector("title", :content => "All users")
+      end      
+      it "should display the list of users" do
+        get :index
+        @users.each do |user|
+          response.should have_selector("li", :content=>user.name)
+        end
+      end  
+      it "should have an element for each user" do
+        get :index
+        @users[0..2].each do |user|
+          response.should have_selector("li", :content => user.name)
+        end
+      end
+      describe "pagination" do
+        before :each do
+          50.times do |n|
+            @users << Factory(:user, :email => Factory.next(:email))
+          end  
+        end
+        it "should display pagination links" do
+          get :index
+          response.should have_selector("div.pagination")
+          response.should have_selector("a", :href=>users_path(:page=>2))
+        end
+        it "should display links 1and 2 for 50 users" do
+          get :index
+          response.should_not have_selector("a", :href=>users_path(:page=>3))
+        end
+        it "should NOT have delete links" do
+          get :index
+          response.should_not have_selector("a",:content => 'Delete')
+        end
+
+      end  
+      describe "admin" do
+        before :each do
+          @user.toggle! :admin
+        end
+        it "should have delete links" do
+          get :index
+          response.should have_selector("a",:content => 'Delete')
+        end
+      end    
+    end    
+  end  
+  describe "DELETE 'destroy'" do
+    before :each do
+      @user = Factory(:user)
+      @second = Factory(:user, :email=>'other@email.fr')
+      test_sign_in @user
+    end
+    it "should redirect to root path" do
+      delete :destroy, :id=> @second
+      response.should redirect_to root_path
+    end    
+    it "should not delete any user" do
+      lambda do
+        delete :destroy, :id=> @second
+      end.should_not change(User,:count)  
+    end
+    describe "admin user" do
+      before :each do
+        @user.toggle! :admin
+      end  
+      it "should redirect to users list" do
+        delete :destroy, :id=> @second
+        response.should redirect_to users_path
+      end  
+      it "should display a flash message" do
+        delete :destroy, :id=> @second
+        flash[:success].should =~ /deleted/i
+      end  
+      it "should delete one user" do
+        lambda do
+          delete :destroy, :id=> @second
+        end.should change(User,:count).by(-1)  
+      end
+    end
   end
+    
   
   describe "GET 'new'" do
     it "should be successful" do
@@ -40,6 +141,9 @@ describe UsersController do
   end
   
   describe "GET 'show'" do
+    before(:each) do
+      @user = Factory(:user)
+    end  
     it "should be successful" do
       get :show, :id => @user
       response.should be_success
@@ -111,5 +215,62 @@ describe UsersController do
       end            
     end  
   end  
+  
+  describe "GET 'edit'" do
+    before :each do
+      @user = Factory('user')
+    end  
+    describe "for anon users" do
+      it "should redirect to signin path" do
+        get :edit, :id => @user
+        response.should redirect_to(signin_path)
+      end        
+    end  
+    describe "for authenticated users" do
+      before :each do
+        test_sign_in @user
+      end  
+      it "should be success" do
+        get :edit, :id => @user
+        response.should be_success
+      end  
+      it "should have the right title" do
+        get :edit, :id => @user
+        response.should have_selector("title", :content => "Edit user")
+      end  
+      it "should have a link to change gravatar" do
+        get :edit, :id => @user
+        response.should have_selector("a", :href => gravatar_url,
+                                          :content => "change")
+      end        
+    end
+    describe "for other user" do
+      before :each do
+        test_sign_in @user
+        @wronguser = Factory(:user, :email => 'user2@email.fr')
+      end  
+      it "should redirect to root if wrong user" do
+        get :edit, :id => @wronguser
+        response.should redirect_to(root_path)
+      end      
+      it "should redirect to root if wrong user" do
+        put :update, :id => @wronguser, :user => {}
+        response.should redirect_to(root_path)
+      end      
 
+    end  
+    describe "PUT 'update'" do
+      before :each do
+        test_sign_in @user
+        @attr = {:email=>'new@email.fr',:name=>'new_name',:password=>'new_password',:password_confirmation=>'new_password'}
+      end
+      it "should update user attributes" do
+        put :update, :id=> @user, :user => @attr
+        @user.reload
+        @user.name.should == @attr[:name]
+        @user.email.should == @attr[:email]
+      end  
+    end
+  end
+  
 end

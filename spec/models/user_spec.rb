@@ -112,4 +112,21 @@ describe User do
     user_with_duplicate_email = User.new(@attr)
     user_with_duplicate_email.should_not be_valid
   end
+  describe "admin" do
+    before :each do
+      @user = User.create(@attr)
+    end  
+    it "should response to :admin" do
+      @user.should respond_to :admin
+    end
+    it "should not be admin by default" do
+      @user.should_not be_admin
+    end
+    it "should  be able to toggle admin" do
+      @user.toggle! :admin
+      @user.should be_admin
+      @user.toggle! :admin
+      @user.should_not be_admin
+    end    
+  end  
 end

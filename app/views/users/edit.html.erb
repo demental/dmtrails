@@ -1,0 +1,4 @@
+<h1>Edit user <%= @user.name %></h1>
+<%= render 'users/form' %>
+<%= gravatar_for @user %>
+<%= link_to "change", gravatar_url %>

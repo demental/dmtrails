@@ -1,5 +1,11 @@
 <aside>
 Name: <%= @user.name %><br />
 URL : <%= link_to user_path(@user), @user  %>
+Microposts : <%= @user.microposts.count %>
 </aside>
 <h1><%= gravatar_for @user %><%= @user.name %></h1>
+<% unless @user.microposts.empty? %>
+<ul class="microposts">
+  <%= render @microposts %>
+</ul> 
+<% end %>

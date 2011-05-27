@@ -182,6 +182,14 @@ describe UsersController do
       get :show, :id => @user
       response.should have_selector("h1>img", :class => "gravatar")
     end    
+    it "should display the users microposts" do
+      mp1 = @user.microposts.create :content => 'foo bar'
+      mp2 = @user.microposts.create :content => 'bar baz'
+      get :show, :id => @user
+
+      response.should have_selector('span.content', :content => mp1.content)
+      response.should have_selector('span.content', :content => mp2.content)
+    end
   end
   describe "POST 'create'" do
     before :each do

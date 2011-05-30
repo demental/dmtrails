@@ -190,6 +190,13 @@ describe UsersController do
       response.should have_selector('span.content', :content => mp1.content)
       response.should have_selector('span.content', :content => mp2.content)
     end
+    it "should have a pagination for the microposts" do
+      50.times do |n|
+        @user.microposts.create :content => 'message #{n}'
+      end
+      get :show, :id => @user
+      response.should have_selector('a',:href => user_path(@user,:page=>2))
+    end
   end
   describe "POST 'create'" do
     before :each do

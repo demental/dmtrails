@@ -5,7 +5,8 @@ Microposts : <%= @user.microposts.count %>
 </aside>
 <h1><%= gravatar_for @user %><%= @user.name %></h1>
 <% unless @user.microposts.empty? %>
+  <%= will_paginate @microposts %>
 <ul class="microposts">
   <%= render @microposts %>
-</ul> 
+</ul>
 <% end %>

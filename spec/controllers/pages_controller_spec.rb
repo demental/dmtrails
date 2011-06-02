@@ -18,6 +18,19 @@ describe PagesController do
       response.should have_selector("title", 
                       :content=>@base_title + "Home")
     end  
+    describe "feed" do
+      before :each do
+        @user = Factory(:user)
+        test_sign_in @user
+        10.times do |n|
+          Factory(:micropost, :user => @user)
+        end
+      end
+      it "should display users feed" do
+        get 'home'
+        assigns[:feed_items].first.should == @user.feed.first
+      end
+    end
   end
 
   describe "GET 'about'" do

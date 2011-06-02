@@ -1,8 +1,4 @@
-<aside>
-Name: <%= @user.name %><br />
-URL : <%= link_to user_path(@user), @user  %>
-Microposts : <%= @user.microposts.count %>
-</aside>
+<%= render 'shared/userinfo', :user => @user %>
 <h1><%= gravatar_for @user %><%= @user.name %></h1>
 <% unless @user.microposts.empty? %>
   <%= will_paginate @microposts %>

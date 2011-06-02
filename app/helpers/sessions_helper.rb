@@ -24,7 +24,7 @@ module SessionsHelper
     store_path
     redirect_to signin_path, :notice => "You must sign in to access this page"
   end
-  def redirect_to_or(path)
+  def redirect_back_or(path)
     redirect_to(session[:originpath] || path)
     clear_originpath
   end      

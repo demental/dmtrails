@@ -1,10 +1,26 @@
 <h1>Sample App</h1>
 <p>
-  This is the home page for the
-  <a href="http://railstutorial.org/">Ruby on Rails Tutorial</a>
-  sample application.
+This is the home page for the
+<a href="http://railstutorial.org/">Ruby on Rails Tutorial</a>
+sample application.
 </p>
 
-<p>
+<% if signed_in? %>
+  <h1>What's up ?</h1>
+  <div class="form">
+    <%= render 'shared/micropost_form' %>
+  </div>
+  <div class="info">
+    <%= render 'shared/userinfo', :user => current_user %>
+  </div>
+  <% unless @feed_items.empty? %>
+    <div class="feed">
+      <%= render :partial=>"shared/feed_item", :collection => @feed_items %>
+    </div>
+    <% will_paginate @feed_items %>
+  <% end %>
+<% else %>  
+  <p>
   <%= link_to "Sign up now", signup_path, :class => "signup_button round" %>
-</p>  
+  </p>  
+<% end %>

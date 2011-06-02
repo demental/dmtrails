@@ -3,4 +3,7 @@
   <%= micropost.content %>
 </span>
 <date><%= time_ago_in_words(micropost.created_at) %></date>
+<% if current_user? micropost.user %>
+  <%= link_to 'Delete', micropost, :method => :delete, :confirm => 'Sure ?' %>
+<% end %>
 </li>

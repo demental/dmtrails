@@ -1,0 +1,5 @@
+<aside>
+Name: <%= user.name %><br />
+URL : <%= link_to user_path(user), user  %>
+<%= pluralize(user.microposts.count, "microposts") %>
+</aside>

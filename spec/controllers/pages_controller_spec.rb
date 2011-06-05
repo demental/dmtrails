@@ -10,7 +10,7 @@ describe PagesController do
   end
   describe "GET 'home'" do
     it "should be successful" do
-      get 'home'
+      get :home
       response.should be_success
     end
     it "should have the right title" do
@@ -29,6 +29,35 @@ describe PagesController do
       it "should display users feed" do
         get 'home'
         assigns[:feed_items].first.should == @user.feed.first
+      end
+    end
+    describe "micropost form" do
+      before :each do
+        @user = Factory :user
+        test_sign_in @user
+      end
+      it "should have a 'countable' textarea" do
+        get 'home'
+        response.should have_selector 'textarea.countable'
+      end 
+    end
+    describe "micropost pagination" do
+      before :each do
+        @user = Factory :user
+        test_sign_in @user
+      end
+      it "should display micropost pagination" do
+        50.times do |n|
+          @user.microposts.create :content=>"Content #{n}"
+        end
+        get :home
+        response.should have_selector('a', :href => root_path(:page=>2))
+      end
+      it "should not display pagination if too few posts" do
+        
+        5.times do |n|
+          @user.microposts.create :content=>"Content #{n}"
+        end
       end
     end
   end

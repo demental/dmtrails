@@ -6,21 +6,7 @@ sample application.
 </p>
 
 <% if signed_in? %>
-  <h1>What's up ?</h1>
-  <div class="form">
-    <%= render 'shared/micropost_form' %>
-  </div>
-  <div class="info">
-    <%= render 'shared/userinfo', :user => current_user %>
-  </div>
-  <% unless @feed_items.empty? %>
-    <div class="feed">
-      <%= render :partial=>"shared/feed_item", :collection => @feed_items %>
-    </div>
-    <% will_paginate @feed_items %>
-  <% end %>
+  <%= render 'pages/home.signedin' %>
 <% else %>  
-  <p>
-  <%= link_to "Sign up now", signup_path, :class => "signup_button round" %>
-  </p>  
+  <%= render 'pages/home.notsignedin' %>
 <% end %>

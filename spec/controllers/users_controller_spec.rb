@@ -197,6 +197,17 @@ describe UsersController do
       get :show, :id => @user
       response.should have_selector('a',:href => user_path(@user,:page=>2))
     end
+    it "should display the right number of microposts" do
+      get :show, :id => @user
+      response.should have_selector('body', :content => '0 microposts')
+      @user.microposts.create :content => 'message'
+      get :show, :id => @user
+ 
+      response.should have_selector('body', :content => '1 micropost')
+      @user.microposts.create :content => 'message'
+      get :show, :id => @user
+      response.should have_selector('body', :content => '2 microposts')
+    end
   end
   describe "POST 'create'" do
     before :each do

@@ -1,7 +1,7 @@
 <%= form_for @micropost do |f| %>
   <%= render 'shared/error_messages', :object => @micropost %>
   <div class="field">
-    <%= f.text_area :content %>
+    <%= f.text_area :content , :class => :countable %>
   </div>
   <div class="actions">
     <%= f.submit "Submit" %>
